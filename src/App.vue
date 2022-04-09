@@ -11,36 +11,56 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
 import TileComponent from './Tile.vue'
-import Tile from './js/Tile'
 
-// reactive state
-const wordLength = 3
+import { ref, reactive, computed } from 'vue'
+import Tile from './js/tile'
+
+const word = 'cat'
 const guessAllowed = 5
 const board = reactive(
   Array.from({length: guessAllowed}, () => {
-    return Array.from({length: wordLength}, () => new Tile);
+    return Array.from({length: word.length}, () => new Tile);
   })
 );
 
-let currentRowIndex = 0
+let currentRowIndex = ref(0)
+let currentRow = computed(() => board[currentRowIndex.value])
+let currentGuess = computed(() => currentRow.value.map(tile => tile.letter).join(''))
 
-const keyPressHandler = (e) => {
-  const key = String.fromCharCode(e.keyCode)
-  if (!/^[A-z]$/.test(key)) {
-    return
+
+const play = function(e) {
+  if (/^[A-z]$/.test(e.key)) {
+    useGame( e.key)
   }
+  else if (e.key === 'Enter') {
+    useSubmitGuess()
+  }
+}
 
-  for (let tile of board[currentRowIndex]) {
+function useGame (key) {
+  for (let tile of currentRow.value) {
     if (! tile.letter) {
       tile.fill(key)
       break
     }
   }
-};
+}
 
-window.addEventListener("keypress", keyPressHandler);
+function useSubmitGuess() {
+  if (currentGuess.value.length !== word.length) {
+    return
+  }
+
+  if (currentGuess.value === word) {
+    alert('WIN')
+  } else {
+    alert('Nope')
+    currentRowIndex.value++
+  }
+}
+
+window.addEventListener("keypress", play);
 </script>
 
 <style>
