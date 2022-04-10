@@ -1,9 +1,10 @@
 <template>
-  <div>
-    <h1 class="text-white text-center mb-5 text-xl">
-      BATTLE WORDLE
-    </h1>
-    <div :key="`row-${row}`" v-for="row in board" class="flex flex-row">
+  <div class="flex flex-row">
+    <LogoComponent />
+  </div>
+  <div id="game" class="text-white rounded-xl before:text-red"
+    style="background-image: linear-gradient(153deg, #1c2b45 13%, #0c1321 85%), linear-gradient(149deg, #fec63b 3%, rgba(254, 198, 59, 0) 80%)">
+    <div :key="`row-${row}`" v-for="row in board" class="flex flex-row" style="animation: fade 2s;">
       <TileComponent
         v-for="tile in row"
         :key="`tile-${tile}`"
@@ -19,6 +20,7 @@
 
 <script setup>
 import TileComponent from './Tile.vue'
+import LogoComponent from './Logo.vue'
 import { ref, reactive, computed } from 'vue'
 import Tile from './js/tile'
 
