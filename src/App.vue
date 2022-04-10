@@ -1,13 +1,19 @@
 <template>
   <div class="flex flex-row">
-    <LogoComponent />
+    <!-- <LogoComponent /> -->
   </div>
-  <div id="game" class="text-white rounded-xl before:text-red"
+  <div class="relative text-white rounded-2xl m-auto"
     style="background-image: linear-gradient(153deg, #1c2b45 13%, #0c1321 85%), linear-gradient(149deg, #fec63b 3%, rgba(254, 198, 59, 0) 80%)">
-    <div :key="`row-${row}`" v-for="row in board" class="flex flex-row" style="animation: fade 2s;">
+    <span
+      class="content-none block absolute -inset-[7px] -z-10 rounded-2xl"
+      style="background-image: linear-gradient(138deg, #6ba0e2 -20%, #131e32 105%);"
+    />
+
+    <div :key="`row-${index}`" v-for="(row, index) in board" class="flex flex-row animate-pulse-background"
+      :class="{'row current': currentRowIndex === index }">
       <TileComponent
-        v-for="tile in row"
-        :key="`tile-${tile}`"
+        v-for="(tile, tileIndex) in row"
+        :key="`tile-${tileIndex}`"
         :letter="tile.letter"
         :status="tile.status"
       />
@@ -99,5 +105,18 @@ window.addEventListener("keydown", onKeyDown)
 <style>
 html, body, #app{
   height: 100%
+}
+
+
+.row.current .tile.empty:first-of-type {
+    animation: fade 2s;
+    animation-fill-mode: both;
+    animation-iteration-count: infinite;
+}
+
+@keyframes fade {
+    50% {
+        background: rgba(255, 255, 255, .05)
+    }
 }
 </style>
