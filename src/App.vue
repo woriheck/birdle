@@ -30,8 +30,8 @@ import LogoComponent from './Logo.vue'
 import { ref, reactive, computed } from 'vue'
 import Tile from './js/tile'
 
-const word = 'cat'
-const guessAllowed = 3
+const word = 'attack'
+const guessAllowed = 5
 const board = reactive(
   Array.from({length: guessAllowed}, () => {
     return Array.from({length: word.length}, () => new Tile)
@@ -81,9 +81,35 @@ function submitGuess() {
     return
   }
 
-  for (let tile of currentRow.value) {
-    tile.updateStatus(currentGuess.value, word)
-  }
+  let tword = [...word]
+  console.log(tword)
+  currentRow.value.forEach(function(tile, index) {
+    if (tile.letter === tword[index]) {
+      tile.status = 'correct'
+      tword[index] = ''
+    }
+  })
+
+  currentRow.value.forEach(function(tile, index) {
+    if (!tile.status) {
+      if (tword.includes(tile.letter)) {
+        tile.status = 'present'
+      } else {
+        tile.status = 'absent'
+      }
+    }
+  })
+  // for (let [tile, index] in currentRow.value) {
+    // console.log(index)
+    // tile.updateStatus(currentGuess.value, word)
+  // }
+
+  // for (let tile of currentRow.value) {
+  //   tile.updateStatus(currentGuess.value, word)
+  // }
+
+
+
 
   if (currentGuess.value === word) {
     state.value = 'complete'
@@ -106,7 +132,6 @@ window.addEventListener("keydown", onKeyDown)
 html, body, #app{
   height: 100%
 }
-
 
 .row.current .tile.empty:first-of-type {
     animation: fade 2s;
