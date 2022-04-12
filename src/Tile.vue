@@ -19,7 +19,7 @@ const capitalize = function(str) {
 }
 
 let TileLetter = computed(() => {
-  var letter = `./Letter${capitalize(props.status)}.vue`
-  return defineAsyncComponent(() => import(letter))
+  var stat = capitalize(props.status)
+  return defineAsyncComponent(() => import(`./Letter${stat}.vue`))
 })
 </script>
