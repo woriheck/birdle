@@ -1,55 +1,36 @@
 <template>
-  <div class="flex flex-row">
-    <!-- <LogoComponent /> -->
+  <div class="fixed top-20 text-white text-xl mb-10">
+    {{message}}
   </div>
-  <div class="relative text-white rounded-2xl"
-    style="background-image: linear-gradient(153deg, #1c2b45 13%, #0c1321 85%), linear-gradient(149deg, #fec63b 3%, rgba(254, 198, 59, 0) 80%)">
+  <div class="relative text-white rounded-2xl">
     <span
-      class="content-none block absolute -inset-[7px] -z-10 rounded-2xl"
-      style="background-image: linear-gradient(138deg, #6ba0e2 -20%, #131e32 105%);"
+      class="content-none block absolute -inset-[3px] -z-10 rounded-2xl"
     />
 
     <div :key="`row-${index}`" v-for="(row, index) in board" class="flex flex-row animate-pulse-background"
       :class="{'row current': currentRowIndex === index }">
-      <TileComponent
+      <TileBoard
         v-for="(tile, tileIndex) in row"
         :key="`tile-${tileIndex}`"
         :letter="tile.letter"
         :status="tile.status"
       />
     </div>
-    <div class="fixed bottom-10 right-20 text-white text-2xl">
-      {{message}}
-    </div>
   </div>
-  <div class="mt-8" @click.stop="$event.target.matches('button') && onKeyDown($event.target.textContent)">
-    <div class="flex flex-row justify-center" :key="`keyboard-row-${index}`" v-for="(keys, index) in keyboards">
-      <button
-        type="button"
-        class="bg-[#c5c5c5] rounded m-[2px] h-[50px] min-w-[40px] p-3" 
-        v-for="(key, index) in keys"
-        :key="`keyboard-key-${index}`"
-        :class="matchingTileForKey(key)?.status"
-      >
-        {{key}}
-      </button>
-    </div>
-  </div>
+
+  <Keyboard :board="board" @keyboard-press="play"/>
 </template>
 
 <script setup>
-import TileComponent from './Tile.vue'
+import TileBoard from './components/Tile.vue'
+import Keyboard from './components/Keyboard.vue'
 import LogoComponent from './Logo.vue'
 import { ref, reactive, computed } from 'vue'
 import Tile from './js/tile'
 
-const keyboards = [
-  'QWERTYUIOP'.split(""), 
-  'ASDFGHJKL'.split(""), 
-  ['Enter', ...'ZXCVBNM'.split(""), 'Backspace']
-]
-const word = 'attack'
-const guessAllowed = 5
+
+const word = 'eat'
+const guessAllowed = word.length
 const board = reactive(
   Array.from({length: guessAllowed}, () => {
     return Array.from({length: word.length}, () => new Tile)
@@ -64,7 +45,11 @@ let currentGuess = computed(() => currentRow.value.map(tile => tile.letter).join
 let remainingGueses = computed(() => guessAllowed - currentRowIndex.value - 1)
 
 
-const onKeyDown = function(key) {
+
+function play (key) {
+  if (state.value == 'complete') {
+    return
+  }
   message.value = ''
 
   if (/^[A-z]$/.test(key)) {
@@ -75,11 +60,6 @@ const onKeyDown = function(key) {
     emptyTile()
   }
 }
-
-function keyboard (key) {
-  alert(key)
-}
-
 
 function fillTile (key) {
   for (let tile of currentRow.value) {
@@ -136,19 +116,8 @@ function submitGuess() {
   currentRowIndex.value++
 }
 
-function matchingTileForKey(key) 
-{
-  return board.flat()
-    .filter((tile) => tile.status)
-    .sort((a, b) => {
-      return b.status === 'correct'
-    })
-    .find((tile) => tile.letter === key.toLowerCase())
-}
 
-window.addEventListener("keydown",  (e)=>{ 
-  this.onkeydown(e.key)
-})
+window.addEventListener("keydown", (e) => state.value !== 'complete' && play(e.key))
 </script>
 
 <style>
@@ -156,7 +125,7 @@ html, body, #app{
   height: 100%
 }
 
-.row.current .tile.empty:first-of-type {
+.row.current .empty:first-child, :not(.empty) + .empty  {
     animation: fade 2s;
     animation-fill-mode: both;
     animation-iteration-count: infinite;

@@ -1,0 +1,43 @@
+<template>
+  <div class="mt-14" @click.stop="$event.target.matches('button') && $emit('keyboardPress', ($event.target.textContent))">
+    <div class="flex flex-row justify-center" :key="`keyboard-row-${index}`" v-for="(keys, index) in keyboards">
+      <button
+        type="button"
+        class="
+          bg-[#c5c5c5] rounded mx-0.5 my-1 h-10
+          p-1 min-w-[30px] text-sm
+          sm:min-w-[40px] sm:p-3
+        "
+        v-for="(key, index) in keys"
+        :key="`keyboard-key-${index}`"
+        :class="matchingTileForKey(key)?.status"
+      >
+        {{key}}
+      </button>
+    </div>
+  </div>
+</template>
+
+
+<script setup>
+const emit = defineEmits([
+  'keyboardPress'
+])
+const props = defineProps({
+  board: Array
+})
+const keyboards = [
+  'QWERTYUIOP'.split(""),
+  'ASDFGHJKL'.split(""),
+  ['Enter', ...'ZXCVBNM'.split(""), 'Backspace']
+]
+
+function matchingTileForKey(key) {
+  return props.board.flat()
+    .filter((tile) => tile.status)
+    .sort((a, b) => {
+      return b.status === 'correct'
+    })
+    .find((tile) => tile.letter === key.toLowerCase())
+}
+</script>

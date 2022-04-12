@@ -1,7 +1,11 @@
 <template>
   <div :class="{'empty' : letter === ''}"
-    class="tile outline outline-1 outline-[#496e9e]/[.1] text-[#496e9e] text-4xl font-semibold uppercase w-24 h-24 flex justify-center items-center"
-  >
+    class="
+      flex justify-center items-center outline outline-1 outline-[#7cc0d8]/[.6]
+      text-[#496e9e] font-semibold uppercase
+      m-1 rounded w-10 h-10 text-xl
+      sm:w-15 sm:h-15 sm:text-2xl
+    ">
     <component :is="TileLetter">{{letter}}</component>
   </div>
 </template>
