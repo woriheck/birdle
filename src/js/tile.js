@@ -5,4 +5,8 @@ export default class Tile {
   fill(letter) {
     this.letter = letter.toLowerCase()
   }
+
+  empty() {
+    this.letter = ''
+  }
 }
