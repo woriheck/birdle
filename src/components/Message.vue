@@ -68,13 +68,6 @@ let bubblePosition = computed(function() {
 })
 
 let message = computed(() => {
-  if (props.state === 'welcome') {
-    `
-      Welcome to birdle! <br>
-      Try to guess my word.
-    `
-  }
-
   if (props.state === 'win') {
     if (props.remainingGuesses == props.guessAllowed - 1) {
       return `I'm pretty sure,<br> you are cheating.<br> shame on you !!!`

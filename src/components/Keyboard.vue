@@ -36,7 +36,11 @@ function matchingTileForKey(key) {
   return props.board.flat()
     .filter((tile) => tile.status)
     .sort((a, b) => {
-      return b.status === 'correct'
+      if (b.status === 'correct') {
+        return 1
+      } else {
+        return -1
+      }
     })
     .find((tile) => tile.letter === key.toUpperCase())
 }
