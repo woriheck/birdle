@@ -38,7 +38,7 @@ function matchingTileForKey(key) {
     .sort((a, b) => {
       return b.status === 'correct'
     })
-    .find((tile) => tile.letter === key.toLowerCase())
+    .find((tile) => tile.letter === key.toUpperCase())
 }
 </script>
 
