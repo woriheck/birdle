@@ -1,1 +1,0 @@
-import{_ as t,o as s,c as r,r as a}from"./index.da6e25c1.js";const o={},c={class:"text-[#f7f749]",style:{"text-shadow":"0 0 12px rgba(246, 171, 38, 0.42)"}};function n(e,_){return s(),r("span",c,[a(e.$slots,"default")])}var l=t(o,[["render",n]]);export{l as default};
