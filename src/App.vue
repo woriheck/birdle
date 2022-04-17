@@ -22,7 +22,7 @@
     :board="board"
   />
 
-    <div class="fixed right-2 bottom-1 text-white text-xs">Icon created by <a href="https://icons8.com/">icon8</a></div>
+  <div class="fixed right-2 bottom-1 text-white text-xs">Icon created by <a href="https://icons8.com/">icon8</a></div>
 </template>
 
 <script setup>

@@ -68,13 +68,6 @@ let bubblePosition = computed(function() {
 })
 
 let message = computed(() => {
-  if (props.state === 'welcome') {
-    `
-      Welcome to birdle! <br>
-      Try to guess my word.
-    `
-  }
-
   if (props.state === 'win') {
     if (props.remainingGuesses == props.guessAllowed - 1) {
       return `I'm pretty sure,<br> you are cheating.<br> shame on you !!!`
@@ -97,7 +90,7 @@ let message = computed(() => {
 
   if (props.state === 'invalid_word') {
     return  `
-      Why you no study? <br>
+      Why do you not study? <br>
       This is not a word! <br>
       Haiyaa...
     `
@@ -110,7 +103,7 @@ let message = computed(() => {
   if (props.state === 'cheat') {
     return  `
       Hey! no cheating.<br>
-      My eyes is on you!
+      My eyes are on you!
     `
   }
 
@@ -124,8 +117,8 @@ let message = computed(() => {
     if (props.completePercentage === 0 ) {
       return randomElement(
         [
-          `Cham lo! <br>Don't buy TOTO today...`,
-          `Haiya, your mom know <br> you scoring 0 or not ?!!`
+          `Oh no!<br>Don't buy TOTO today...`,
+          `Haiya, your mom knows <br> you scoring 0 or not ?!!`
         ]
       )
     }
@@ -134,25 +127,25 @@ let message = computed(() => {
       return `Haiz...<br> You've no progress at all, <br>just like your pathetic life.`
     }
 
-    if (props.completePercentage >= 10 && props.completePercentage <= 30) {
+    if (props.completePercentage <= 49) {
       if (props.remainingGuesses <= 1) {
         return `Hey, You are too slow,<br> you gonna lose the game.`
       }
 
       return randomElement([
         `OK not bad,<br> You are making some progress,<br> but is not enough.`,
-        `OK OK,<br> That's help a little bit,<br> just a little bit...`
+        `OK OK,<br> That helps a little bit,<br> just a little bit...`
       ])
     }
 
-    if (props.completePercentage >= 40 && props.completePercentage <= 69) {
+    if (props.completePercentage >= 50 && props.completePercentage <= 69) {
       return randomElement([
-        `I think you have some clues,<br>come on keep thinking.`,
+        `I think you already have <br>some clues,<br>come on keep thinking.`,
       ])
     }
 
     if (props.completePercentage >= 70) {
-      return `It's close, <br>but not closed enough.`
+      return `It's close, <br>but not close enough.`
     }
   }
 
@@ -161,5 +154,4 @@ let message = computed(() => {
     Try to guess my word.
   `
 })
-
 </script>
