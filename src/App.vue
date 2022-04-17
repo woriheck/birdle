@@ -1,6 +1,6 @@
 <template>
   <Message
-    class="mt-20"
+    class="mt-16"
     @ask-bird="askBird"
     :current-guess="currentGuess"
     :complete-percentage="completePercentage"
@@ -11,6 +11,7 @@
     :start-game-time="startGameTime"
   />
   <TileBoard
+    class="mt-3"
     :board="board"
     :current-row-index="currentRowIndex"
     :state="state"
@@ -20,6 +21,8 @@
     @keyboard-press="play"
     :board="board"
   />
+
+    <div class="fixed right-2 bottom-1 text-white text-xs">Icon created by <a href="https://icons8.com/">icon8</a></div>
 </template>
 
 <script setup>

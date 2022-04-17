@@ -18,7 +18,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { randomElement } from '../js/helper'
+import { randomElement, shuffle } from '../js/helper'
 const emit = defineEmits([
   'askBird'
 ])
@@ -103,10 +103,8 @@ let message = computed(() => {
     `
   }
 
-  if (props.state === 'typing') {
-    return  `
-      singing...
-    `
+  if (props.state.startsWith('typing')) {
+    return '...'
   }
 
   if (props.state === 'cheat') {

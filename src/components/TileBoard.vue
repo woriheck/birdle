@@ -1,5 +1,5 @@
 <template>
-  <div class="text-white rounded-2xl relative mt-3">
+  <div class="text-white rounded-2xl relative">
     <span
       class="content-none block absolute -inset-[3px] -z-10 rounded-2xl"
     />
@@ -33,10 +33,10 @@ const currentRowOutline = function(index) {
   }
 
   if (props.state === 'invalid_word') {
-    return "outline-[#f87171]/[.5]"
+    return "outline-[#f87171]/[.5] text-[#ff3f3f]"
   }
 
-  return "outline-[#7cc0d8]/[.5]"
+  return "outline-[#7cc0d8]/[.5] text-[#496e9e]"
 }
 
 </script>
