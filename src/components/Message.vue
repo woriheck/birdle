@@ -31,6 +31,7 @@ const props = defineProps({
   completePercentage: Number,
   state: String,
   startGameTime: Date,
+  word: String,
 })
 
 const gameTime = function() {
@@ -42,7 +43,7 @@ const gameTime = function() {
   if (min > 0) {
     return `${min}m ${sec}s`
   }
-  return `${sec}sec`
+  return `${sec}s`
 }
 
 let birdHint = ref('')
@@ -51,7 +52,7 @@ function askBird() {
   birdHint.value =  randomElement(
     [
       `Don't ask me, <br> I'm not gonna give you <br> any clues.`,
-      `OK, I will give you a hint. <br> A-Z pick a letter.`
+      `OK la, I will give you a hint. <br> A-Z pick a letter.`
     ]
   )
 }
@@ -80,7 +81,7 @@ let message = computed(() => {
 
   if (props.state === 'lose') {
     return  `
-      Oh no, You lose! <br>You just wasted <br> ${gameTime()} in birdle.
+      The words is "${props.word}"<br>You just wasted  ${gameTime()} <br> in birdle.
     `
   }
 

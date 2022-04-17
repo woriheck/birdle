@@ -8,6 +8,7 @@
     :previous-percentage="previousPercentage"
     :remaining-guesses="remainingGuesses"
     :state="state"
+    :word="word"
     :start-game-time="startGameTime"
   />
   <TileBoard
