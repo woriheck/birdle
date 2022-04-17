@@ -1,93 +1,134 @@
 <template>
-  <div class="fixed top-20 text-white text-xl mb-10">
-    {{message}}
-  </div>
-  <div class="relative text-white rounded-2xl">
-    <span
-      class="content-none block absolute -inset-[3px] -z-10 rounded-2xl"
-    />
-
-    <div :key="`row-${index}`" v-for="(row, index) in board" class="flex flex-row animate-pulse-background"
-      :class="{'row current': currentRowIndex === index }">
-      <TileBoard
-        v-for="(tile, tileIndex) in row"
-        :key="`tile-${tileIndex}`"
-        :letter="tile.letter"
-        :status="tile.status"
-      />
-    </div>
-  </div>
-
-  <Keyboard :board="board" @keyboard-press="play"/>
+  <Message
+    class="mt-20"
+    @ask-bird="askBird"
+    :current-guess="currentGuess"
+    :complete-percentage="completePercentage"
+    :guess-allowed="guessAllowed"
+    :previous-percentage="previousPercentage"
+    :remaining-guesses="remainingGuesses"
+    :state="state"
+    :start-game-time="startGameTime"
+  />
+  <TileBoard
+    :board="board"
+    :current-row-index="currentRowIndex"
+    :state="state"
+  />
+  <Keyboard
+    class="mt-3"
+    @keyboard-press="play"
+    :board="board"
+  />
 </template>
 
 <script setup>
-import TileBoard from './components/Tile.vue'
+// component setup
 import Keyboard from './components/Keyboard.vue'
-import LogoComponent from './Logo.vue'
+import Message from './components/Message.vue'
+import TileBoard from './components/TileBoard.vue'
+
+// library
 import { ref, reactive, computed } from 'vue'
+import { secret, words } from './js/word'
 import Tile from './js/tile'
+import { randomElement } from './js/helper'
 
-
-const word = 'eat'
+// game setup
+// Grab a random word from secret list
+const word = randomElement(secret);
 const guessAllowed = word.length
-const board = reactive(
+
+let board = reactive(
   Array.from({length: guessAllowed}, () => {
     return Array.from({length: word.length}, () => new Tile)
   })
 )
-
+let startGameTime = reactive(new Date)
 let currentRowIndex = ref(0)
-let state = ref('')
-let message = ref('')
+let currentIndex = computed(function() {
+  let index = currentRow.value.findIndex(r => r.letter == '')
+  return index === -1 ? word.length : index
+})
+let state = ref('welcome')
+let previousPercentage = ref(0)
+let completePercentage = ref(0)
 let currentRow = computed(() => board[currentRowIndex.value])
 let currentGuess = computed(() => currentRow.value.map(tile => tile.letter).join(''))
-let remainingGueses = computed(() => guessAllowed - currentRowIndex.value - 1)
-
-
+let remainingGuesses = computed(() => guessAllowed - currentRowIndex.value - 1)
 
 function play (key) {
-  if (state.value == 'complete') {
+  if (state.value === 'win' || state.value === 'lose') {
     return
   }
-  message.value = ''
 
-  if (/^[A-z]$/.test(key)) {
-    fillTile(key)
-  } else if (key === 'Enter') {
+  if (key === 'Enter' && currentGuess.value.length === word.length) {
     submitGuess()
-  } else if (key === 'Backspace') {
-    emptyTile()
+    return
   }
-}
 
-function fillTile (key) {
-  for (let tile of currentRow.value) {
-    if (! tile.letter) {
-      tile.fill(key)
-      break
-    }
+  // Delete a letter from tile
+  if (key === 'Backspace' && currentIndex.value) {
+    state.value = 'typing'
+    currentRow.value[currentIndex.value - 1].letter = ''
   }
-}
 
-function emptyTile (key) {
-  for (let tile of [...currentRow.value].reverse()) {
-    if (tile.letter) {
-      tile.empty()
-      break
+  // No tile to fill in in this row
+  if (currentIndex.value == word.length) {
+    return
+  }
+
+  // Fill a letter to the tile
+  if (/^[A-Za-z]$/.test(key)) {
+    state.value = 'typing'
+
+    // Reset data on every new guess
+    if (currentIndex.value === 0) {
+      previousPercentage.value = completePercentage.value
+      completePercentage.value = 0
     }
+
+    // Game started when player fill in the first key
+    if (currentRowIndex == 0 && currentIndex.value === 0) {
+      startGameTime = new Date()
+    }
+
+    // Convert all to uppercase for comparision
+    currentRow.value[currentIndex.value].letter = key.toUpperCase()
   }
 }
 
 function submitGuess() {
-  if (currentGuess.value.length !== word.length) {
+  // not a valid word
+  if (!words.includes(currentGuess.value)) {
+    state.value = 'invalid_word'
     return
   }
 
+  // update tile status (absend, present, correct)
+  updateTileStatus()
+
+  if (currentGuess.value === word) {
+    state.value = 'win'
+    return
+  }
+
+  if (remainingGuesses.value === 0) {
+    state.value = 'lose'
+    return
+  }
+
+  // judge for answer
+  state.value = 'judge'
+  currentRowIndex.value++
+}
+
+function updateTileStatus () {
   let tword = [...word]
   currentRow.value.forEach(function(tile, index) {
     if (tile.letter === tword[index]) {
       tile.status = 'correct'
+      completePercentage.value += 20;
       tword[index] = ''
     }
   })
@@ -96,57 +137,22 @@ function submitGuess() {
     if (!tile.status) {
       if (tword.includes(tile.letter)) {
         tile.status = 'present'
+        completePercentage.value += 10;
       } else {
         tile.status = 'absent'
       }
     }
   })
-
-  if (currentGuess.value === word) {
-    state.value = 'complete'
-    return message.value = "Yow Win!"
-  }
-
-  if (remainingGueses.value === 0) {
-    state.value = 'complete'
-    return message.value = "Game Over, You Lose"
-  }
-
-  message.value = "Incorrect"
-  currentRowIndex.value++
 }
 
+function askBird() {
+  state.value = 'ask-bird'
+}
 
-window.addEventListener("keydown", (e) => state.value !== 'complete' && play(e.key))
+window.addEventListener("keydown", (e) => play(e.key))
+window.onresize = function(){
+  if((window.outerHeight - window.innerHeight) > 100) {
+    state.value = 'cheat'
+  }
+}
 </script>
-
-<style>
-html, body, #app{
-  height: 100%
-}
-
-.row.current .empty:first-child, :not(.empty) + .empty  {
-    animation: fade 2s;
-    animation-fill-mode: both;
-    animation-iteration-count: infinite;
-}
-
-@keyframes fade {
-    50% {
-        background: rgba(255, 255, 255, .05)
-    }
-}
-
-button.correct {
-  background-color: #47d747;
-}
-button.present {
-  background-color: #f7f749;
-}
-button.invalid {
-  background-color: #ff3f3f;
-}
-button.absent {
-  background-color: #888;
-}
-</style>

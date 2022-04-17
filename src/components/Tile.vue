@@ -1,9 +1,12 @@
 <template>
-  <div :class="{'empty' : letter === ''}"
+  <div :class="{
+      'empty' : letter === ''
+    }
+    "
     class="
-      flex justify-center items-center outline outline-1 outline-[#7cc0d8]/[.6]
+      flex justify-center items-center outline outline-1
       text-[#496e9e] font-semibold uppercase
-      m-1 rounded w-10 h-10 text-xl
+      m-1 rounded w-16 h-16 text-xl
       sm:w-15 sm:h-15 sm:text-2xl
     ">
     <component :is="TileLetter">{{letter}}</component>
@@ -15,7 +18,8 @@ import { computed, defineAsyncComponent } from 'vue'
 
 const props = defineProps({
   letter: String,
-  status: String
+  status: String,
+  state: String,
 })
 
 const capitalize = function(str) {

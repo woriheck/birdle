@@ -1,11 +1,11 @@
 <template>
-  <div class="mt-14" @click.stop="$event.target.matches('button') && $emit('keyboardPress', ($event.target.textContent))">
+  <div @click.stop="$event.target.matches('button') && $emit('keyboardPress', ($event.target.textContent))">
     <div class="flex flex-row justify-center" :key="`keyboard-row-${index}`" v-for="(keys, index) in keyboards">
       <button
         type="button"
         class="
-          bg-[#c5c5c5] rounded mx-0.5 my-1 h-10
-          p-1 min-w-[30px] text-sm
+          bg-[#c5c5c5] rounded mx-0.5 my-1 h-11
+          p-1 min-w-[31px] text-sm
           sm:min-w-[40px] sm:p-3
         "
         v-for="(key, index) in keys"
@@ -41,3 +41,19 @@ function matchingTileForKey(key) {
     .find((tile) => tile.letter === key.toLowerCase())
 }
 </script>
+
+
+<style scoped>
+button.correct {
+  background-color: #47d747;
+}
+button.present {
+  background-color: #f7f749;
+}
+button.invalid {
+  background-color: #ff3f3f;
+}
+button.absent {
+  background-color: #888;
+}
+</style>
