@@ -5,8 +5,8 @@
     "
     class="
       flex justify-center items-center outline outline-1
-      text-[#496e9e] font-semibold uppercase
-      m-1 rounded w-16 h-16 text-xl
+      font-semibold uppercase
+      m-1 rounded w-14 h-14 text-xl
       sm:w-15 sm:h-15 sm:text-2xl
     ">
     <component :is="TileLetter">{{letter}}</component>
