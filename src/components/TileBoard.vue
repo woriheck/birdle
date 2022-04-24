@@ -4,7 +4,10 @@
       class="content-none block absolute -inset-[3px] -z-10 rounded-2xl"
     />
     <div :key="`row-${index}`" v-for="(row, index) in board"
-      :class="{'row current': currentRowIndex === index }"
+      :class="{
+        'row current': currentRowIndex === index,
+        'shake': state === 'invalid_word'
+      }"
       class="flex flex-row animate-pulse-background w-full"
     >
       <Tile
@@ -52,5 +55,33 @@ const currentRowOutline = function(index) {
     50% {
         background: rgba(255, 255, 255, .05)
     }
+}
+
+.row.current.shake {
+  animation: shake 0.8s;
+  transform: translate3d(0, 0, 0);
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-3px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(4px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-7px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(6px, 0, 0);
+  }
 }
 </style>
