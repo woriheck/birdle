@@ -2,7 +2,7 @@
 Clone of wordle game
 
 # Demo
-https://woriheck.github.io/birdle/
+https://birdle.erikchow.app
 
 ## Recommended IDE Setup
 
